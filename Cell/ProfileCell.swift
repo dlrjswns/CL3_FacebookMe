@@ -12,24 +12,24 @@ class ProfileCell:UITableViewCell{
     static let identifier = "profileCell"
     
     //MARK: -Components
-    private lazy var profileView:UIImageView={
-        let vw = UIImageView(image: UIImage(named: "profile.jpeg"))
-        vw.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        vw.widthAnchor.constraint(equalToConstant: 60).isActive = true
+    lazy var profileView:UIImageView={
+        let vw = UIImageView()
+        vw.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        vw.widthAnchor.constraint(equalToConstant: 70).isActive = true
         vw.contentMode = .scaleAspectFit
         return vw
     }()
     
-    private lazy var nameLabel:UILabel={
+    lazy var nameLabel:UILabel={
         let lb = UILabel()
-        lb.text = "이건준"
+//        lb.text = "이건준"
         lb.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.bold)
         return lb
     }()
     
-    private lazy var subLabel:UILabel={
+    lazy var subLabel:UILabel={
         let lb = UILabel()
-        lb.text = "View your profile"
+//        lb.text = "View your profile"
         lb.font = UIFont.systemFont(ofSize: 13)
         return lb
     }()
@@ -54,7 +54,7 @@ class ProfileCell:UITableViewCell{
         
         self.addSubview(nameLabel)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 18).isActive = true
         nameLabel.leftAnchor.constraint(equalTo: profileView.rightAnchor, constant: 10).isActive = true
         
         self.addSubview(subLabel)

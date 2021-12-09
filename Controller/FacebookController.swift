@@ -9,7 +9,8 @@ import UIKit
 
 class FacebookController:UIViewController{
     //MARK: Model
-    let model:[Menu] = [Menu(imageName: "friends.png", title: "Friends"), Menu(imageName: "calendar.png", title: "Events"), Menu(imageName: "groups.png", title: "Groups"), Menu(imageName: "education.png", title: "CMU"), Menu(imageName: "house.png", title: "Town Hall"), Menu(imageName: "games.png", title: "Instant Games"), Menu(imageName: "placeholder.png", title: "See More...")]
+    let model:[Section] = Table.shared.getTable()
+    
     //MARK: UI Components
     private lazy var facebookView:UITableView={
         let vw = UITableView()
@@ -19,10 +20,19 @@ class FacebookController:UIViewController{
     }()
     
     private lazy var viewForSection:UIView={
-       let vw = UIView()
-        vw.backgroundColor = .systemGray6
-        vw.heightAnchor.constraint(equalTo: self)
+        let vw = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 25))
+        vw.backgroundColor = .systemRed
+//        vw.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
+//        vw.heightAnchor.constraint(equalToConstant: 25).isActive = true
         return vw
+    }()
+    
+    private lazy var labelForSection:UILabel={
+        let lb = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 45))
+        lb.text = "   FAVORITES"
+        lb.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.medium)
+        lb.textColor = .gray
+        return lb
     }()
     
     //MARK: -Life Cycle
@@ -33,24 +43,28 @@ class FacebookController:UIViewController{
         facebookView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.identifier)
         
         facebookView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.identifier)
+        
+        self.title = "FaceBook"
+        self.navigationController?.navigationBar.backgroundColor = .blue
         configure()
         
     }
     
     //MARK: -Configure
     func configure(){
-        view.backgroundColor = .systemGray
+        view.backgroundColor = .systemGray5
         view.addSubview(facebookView)
         facebookView.translatesAutoresizingMaskIntoConstraints = false
         facebookView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         facebookView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        facebookView.topAnchor.constraint(equalTo: view.topAnchor, constant: 90).isActive = true
     }
 }
 
 //MARK: -UITableViewDataSource
 extension FacebookController:UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return model.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -71,57 +85,47 @@ extension FacebookController:UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 2{
-            return "FAVORITES"}
-        return " "
+        return model[section].sectionTitle
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 2{
-            let lb = UILabel()
-            viewForSection.addSubview(lb)
-            lb.translatesAutoresizingMaskIntoConstraints = false
-            lb.leftAnchor.constraint(equalTo: viewForSection.leftAnchor, constant: 10).isActive = true
-            lb.bottomAnchor.constraint(equalTo: viewForSection.bottomAnchor).isActive = true
-        lb.text = "    FAVORITES"
-        lb.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
-        lb.textColor = .gray
-        return viewForSection
-        }
-        return viewForSection
-    }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 2{
-            return 45
-        }
-        return 25
-    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if section == 2{
+//            return 45
+//        }
+//        return 25
+//    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = indexPath.row
-        let section = indexPath.section
-        var cell : UITableViewCell = UITableViewCell()
+        let type = model[indexPath.section].cells[indexPath.row].whatType
+        let imgName = model[indexPath.section].cells[indexPath.row].imageName
+        let title = model[indexPath.section].cells[indexPath.row].title
+        let description = model[indexPath.section].cells[indexPath.row].description
         
-        if section == 0 {
-            cell = tableView.dequeueReusableCell(withIdentifier: ProfileCell.identifier, for: indexPath) as! ProfileCell
-        }else if section == 1 {
+        switch type {
+        case .profile:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileCell.identifier, for: indexPath) as! ProfileCell
+            cell.profileView.image = UIImage(named: imgName)
+            cell.nameLabel.text = title
+            cell.subLabel.text = description
+            return cell
+        case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.identifier, for: indexPath) as! MenuCell
-            cell.setImageName = model[indexPath.row].imageName
-            cell.setTitleText = model[indexPath.row].title
+            cell.setImageName = imgName
+            cell.setTitleText = title
+            return cell
         }
-        
-        return cell
     }
 }
 
 extension FacebookController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let section = indexPath.section
+        let type = model[indexPath.section].cells[indexPath.row].whatType
         
-        if section == 0 {
-            return 60
-        }else{
+        switch type{
+        case .profile:
+            return 70
+        case .menu:
             return 40
         }
     }
