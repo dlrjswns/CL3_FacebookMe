@@ -13,41 +13,34 @@ class FacebookController:UIViewController{
     
     //MARK: UI Components
     private lazy var facebookView:UITableView={
-        let vw = UITableView()
+        let vw = UITableView(frame: .zero, style: UITableView.Style.grouped)
         vw.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
         vw.heightAnchor.constraint(equalToConstant: view.frame.height).isActive = true
         return vw
     }()
     
-    private lazy var viewForSection:UIView={
-        let vw = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 25))
-        vw.backgroundColor = .systemRed
-//        vw.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
-//        vw.heightAnchor.constraint(equalToConstant: 25).isActive = true
-        return vw
-    }()
-    
-    private lazy var labelForSection:UILabel={
-        let lb = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 45))
-        lb.text = "   FAVORITES"
-        lb.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.medium)
-        lb.textColor = .gray
-        return lb
-    }()
-    
     //MARK: -Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setTableView()
+        setNavigationBar()
+        configure()
+    }
+    
+    //MARK: -Set TableView
+    func setTableView(){
         facebookView.dataSource = self
         facebookView.delegate = self
         facebookView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.identifier)
         
         facebookView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.identifier)
-        
+    }
+    
+    //MARK: -Set NavigationBar
+    func setNavigationBar(){
         self.title = "FaceBook"
-        self.navigationController?.navigationBar.backgroundColor = .blue
-        configure()
-        
+        self.navigationController?.navigationBar.barTintColor = .systemBlue
     }
     
     //MARK: -Configure
@@ -57,7 +50,7 @@ class FacebookController:UIViewController{
         facebookView.translatesAutoresizingMaskIntoConstraints = false
         facebookView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         facebookView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        facebookView.topAnchor.constraint(equalTo: view.topAnchor, constant: 90).isActive = true
+        facebookView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
     }
 }
 
@@ -89,12 +82,14 @@ extension FacebookController:UITableViewDataSource{
     }
     
     
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        if section == 2{
-//            return 45
-//        }
-//        return 25
-//    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let sectionTitle = model[section].sectionTitle
+        if sectionTitle == "FAVORITES"{
+            return 40
+        }else{
+            return 20
+        }
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let type = model[indexPath.section].cells[indexPath.row].whatType
@@ -118,6 +113,7 @@ extension FacebookController:UITableViewDataSource{
     }
 }
 
+//MARK: -UITableViewDelegate
 extension FacebookController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let type = model[indexPath.section].cells[indexPath.row].whatType

@@ -35,7 +35,7 @@ class Table{
         let table:[Section] = [
             Section(cells: cellsOne, sectionTitle: nil),
             Section(cells: cellsTwo, sectionTitle: " "),
-            Section(cells: cellsThr, sectionTitle: " FAVORITES"),
+            Section(cells: cellsThr, sectionTitle: "FAVORITES"),
             Section(cells: cellsFour, sectionTitle: " ")
         ]
         
